@@ -1,0 +1,71 @@
+﻿@page "/"
+@using ReserveBlockExplorer.Data
+@using ReserveBlockExplorer.Models
+@inject NavigationManager NavigationManager
+@inherits OwningComponentBase<BlockchainService>
+
+<PageTitle>ReserveBlock Explorer</PageTitle>
+
+<div class="container-fluid">
+    <h1 style="text-align:center;">RBX Block Explorer</h1>
+     @if (QueryError)
+                {
+                     <div class="input-group mb-3">
+                        <input class="form-control is-invalid mr-sm-2" type="search" placeholder="Search Block, Txn Hash" @bind="Query" aria-label="Search" required>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" @onclick="SearchBlockchain">Search</button>
+                        </div>
+                    </div>
+
+                }
+                else
+                {
+                    <div class="input-group mb-3">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Search Block, Txn Hash" @bind="Query" aria-label="Search" required>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" @onclick="SearchBlockchain">Search</button>
+                        </div>
+                    </div>
+                } 
+    <div class="row">
+        <div class="col">
+            <LatestBlocks />
+        </div>
+        <div class="col">
+            <LatestBlockTransactions />
+        </div>
+    </div>
+</div>
+
+
+@code{
+    public string Query { get; set; }
+    public bool QueryError { get; set; } = false;
+    private List<string> rpcEndpoints = new List<string>();
+
+    public async void SearchBlockchain()
+    {
+        if (!string.IsNullOrEmpty(Query))
+        {
+            Query = Query.Trim();
+
+            var result = await Service.GetSearch(Query);
+
+            if(result == "blk")
+            {
+                NavigationManager.NavigateTo("block/" + Query);
+                QueryError = false;
+                        
+            }
+            if(result == "tx")
+            {
+                NavigationManager.NavigateTo("transaction/" + Query);
+                QueryError = false;
+            }
+            if(result == "na")
+            {
+                QueryError = true;
+            }
+        }
+    }
+}

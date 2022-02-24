@@ -1,0 +1,134 @@
+﻿@page "/block/{BlockNumber}"
+@using ReserveBlockExplorer.Data
+@using ReserveBlockExplorer.Models
+
+@inherits OwningComponentBase<BlockchainService>
+
+
+<div class="card">
+    <div class="card-header">
+        <div class="d-flex align-items-center">
+            <h5>Block: @BlockNumber</h5>
+            @if (block == null)
+            {
+                <div class="spinner-grow spinner-grow-sm ml-auto" role="status" aria-hidden="true"></div>
+            }
+        </div>
+    </div>
+    <div class="card-body">
+        @if (block != null)
+        {
+
+            <table class="table table-responsive-sm">
+                <tr>
+                    <th class="thead-dark" scope="row">Hash:</th>
+                    <td>@block.Hash</td>
+                </tr>
+                <tr>
+                    <th scope="row">Number:</th>
+                    <td>@block.Height.ToString()</td>
+                </tr>
+                <tr>
+                    <th scope="row">Validator:</th>
+                    <td>@block.Validator</td>
+                </tr>
+                <tr>
+                    <th scope="row">Previous Hash:</th>
+                    <td>@block.PrevHash</td>
+                </tr>
+                <tr>
+                    <th scope="row">Craft Time:</th>
+                    <td>@block.BCraftTime</td>
+                </tr>
+                <tr>
+                    <th scope="row">No. of Transactions:</th>
+                    <td>@block.NumOfTx</td>
+                </tr>
+            </table>
+
+<div class="container">
+    <div class="row py-5">
+        <div class="col">
+            <RadzenCard>
+        <RadzenDataList WrapItems="true" AllowPaging="true" Data="@transactions" TItem="ReserveBlockExplorer.Models.Transaction" PageSize="5" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true">
+                <Template Context="transaction">
+                    <RadzenCard Style="width: 100%; padding: 0; overflow: hidden;">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-3 p-3 product-title">
+                                        @(transaction.Hash)
+                                </div>
+                                <div class="col-lg-8 p-3">
+                                    <div class="row d-flex">
+                                        <div class="col-md-6 col-lg-2">
+                                            <h5 class="mb-0">Height</h5>
+                                            <p class="mb-sm-2 mb-lg-0">@(transaction.Height)</p>
+                                        </div>
+                                        <div class="col-md-6 col-lg-4">
+                                            <h5 class="mb-0">From:</h5>
+                                            <p class="mb-sm-2 mb-lg-0">@(transaction.FromAddress)</p>
+                                        </div>
+                                        <div class="col-md-6 col-lg-4">
+                                            <h5 class="mb-0">To: </h5>
+                                            <p class="mb-sm-2 mb-lg-0">@(transaction.ToAddress)</p>
+                                        </div>
+                                        <div class="col-md-6 col-lg-2">
+                                            <RadzenBadge BadgeStyle="BadgeStyle.Success" Class="price-badge" Text="@(transaction.Amount.ToString("0.00000000"))" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </RadzenCard>
+                </Template>
+            </RadzenDataList>
+                        </RadzenCard>
+        </div>
+    </div>
+</div>
+
+        }
+
+        @if (block == null)
+        {
+            <div>No Block Found</div>
+        }
+    </div>
+</div>
+
+<style>
+.product-title {
+    min-height: 72px;
+    color: #da0074;
+    background-color: rgba(255, 41, 155, .1);
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 20px;
+    letter-spacing: -0.02em;
+}
+.price-badge {
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 20px;
+    padding: 8px;
+}
+</style>
+
+
+@code {
+
+    ReserveBlockExplorer.Models.Block? block;
+    List<ReserveBlockExplorer.Models.Transaction>? transactions;
+
+    [Parameter]
+    public string BlockNumber { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        // load the list
+        block = await Service.GetBlock(BlockNumber);
+        transactions = await Service.GetBlockTransactions(BlockNumber);
+        
+    }
+
+}

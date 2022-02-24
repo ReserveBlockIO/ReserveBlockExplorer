@@ -1,0 +1,82 @@
+﻿@page "/transaction/{transactionHash}"
+@using ReserveBlockExplorer.Data
+@using ReserveBlockExplorer.Models
+
+@inherits OwningComponentBase<BlockchainService>
+
+<div class="card">
+    <div class="card-header">
+        <div class="d-flex align-items-center">
+            <h5>Transaction: @TransactionHash</h5>
+            @if (transaction == null)
+            {
+                <div class="spinner-grow spinner-grow-sm ml-auto" role="status" aria-hidden="true"></div>
+            }
+        </div>
+    </div>
+    <div class="card-body">
+        @if (transaction != null)
+        {
+
+            <table class="table table-responsive-sm">
+                <tr>
+                    <th class="thead-dark" scope="row">Block Number:</th>
+                    <td><a href="/block/@transaction.Height">@transaction.Height</a></td>
+                </tr>
+                <tr>
+                    <th scope="row">From:</th>
+                    <td>@transaction.FromAddress</td>
+                </tr>
+                <tr>
+                    <th scope="row">To:</th>
+                    <td>@transaction.ToAddress</td>
+                </tr>
+                <tr>
+                    <th scope="row">Amount:</th>
+                    <td>@transaction.Amount</td>
+                </tr>
+                <tr>
+                    <th scope="row">Nonce:</th>
+                    <td>@transaction.Nonce</td>
+                </tr>
+
+                <tr style="height: 200px">
+                    <th scope="row">Data:</th>
+                    <td style="max-width: 300px"><small style="word-wrap: break-word">@transaction.NFTData</small></td>
+                </tr>
+                <tr>
+                    <th scope="row">Fees:</th>
+                    <td>@transaction.Fee</td>
+                </tr>
+            </table>
+
+
+        }
+
+        @if (transaction == null)
+        {
+            <div>No Transaction Found</div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string BlockNumber { get; set; }
+
+    [Parameter]
+    public string TransactionHash { get; set; }
+
+    ReserveBlockExplorer.Models.Block? block;
+    ReserveBlockExplorer.Models.Transaction? transaction;
+
+    protected async override Task OnInitializedAsync()
+    {
+        // load the list
+        transaction = await Service.GetTransaction(TransactionHash);
+
+        //StateHasChanged();
+        
+    }
+
+}
