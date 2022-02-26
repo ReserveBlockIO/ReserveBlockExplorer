@@ -18,34 +18,41 @@
     <div class="card-body">
         @if (block != null)
         {
-
-            <table class="table table-responsive-sm">
-                <tr>
-                    <th class="thead-dark" scope="row">Hash:</th>
-                    <td>@block.Hash</td>
-                </tr>
-                <tr>
-                    <th scope="row">Number:</th>
-                    <td>@block.Height.ToString()</td>
-                </tr>
-                <tr>
-                    <th scope="row">Validator:</th>
-                    <td>@block.Validator</td>
-                </tr>
-                <tr>
-                    <th scope="row">Previous Hash:</th>
-                    <td>@block.PrevHash</td>
-                </tr>
-                <tr>
-                    <th scope="row">Craft Time:</th>
-                    <td>@block.BCraftTime</td>
-                </tr>
-                <tr>
-                    <th scope="row">No. of Transactions:</th>
-                    <td>@block.NumOfTx</td>
-                </tr>
-            </table>
-
+             <RadzenCard>
+                  <RadzenCard Style="width: 100%; padding: 0; overflow: hidden;">
+                      <div class="container">
+                            <div class="row">
+                                <div class="col-lg-2 p-3 product-title">
+                                    <div style="margin-top:30px;">
+                                        Block Height: @(block.Height)
+                                    </div>
+                                        
+                                </div>
+                                <div class="col-lg-10 p-3">
+                                    <div class="row d-flex">
+                                        <div class="col-md-4 col-lg-3">
+                                            <h5 class="mb-0">Hash</h5>
+                                            <p class="mb-sm-2 mb-lg-0">@(block.Hash)</p>
+                                        </div>
+                                        <div class="col-md-4 col-lg-3">
+                                            <h5 class="mb-0">Prev Hash: </h5>
+                                            <p class="mb-sm-2 mb-lg-0">@(block.PrevHash)</p>
+                                        </div>
+                                        <div class="col-md-4 col-lg-3">
+                                            <h5 class="mb-0">Validator:</h5>
+                                            <p class="mb-sm-2 mb-lg-0">@(block.Validator)</p>
+                                        </div>
+                                        
+                                        <div class="col-md-4 col-lg-3">
+                                            <h5 class="mb-0">Num of Tx:</h5>
+                                            <RadzenBadge BadgeStyle="BadgeStyle.Success" Class="price-badge" Text="@(block.NumOfTx.ToString())" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </RadzenCard>
+            </RadzenCard>
 <div class="container">
     <div class="row py-5">
         <div class="col">
@@ -82,7 +89,7 @@
                     </RadzenCard>
                 </Template>
             </RadzenDataList>
-                        </RadzenCard>
+        </RadzenCard>
         </div>
     </div>
 </div>
