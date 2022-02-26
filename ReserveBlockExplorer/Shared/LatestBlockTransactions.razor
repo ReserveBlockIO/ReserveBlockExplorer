@@ -55,7 +55,7 @@
         //StateHasChanged();
     }
 
-    protected override async void OnAfterRender(bool firstRender)
+    protected async override Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
@@ -68,7 +68,7 @@
                // Update the UI
                //StateHasChanged();
                     });
-                }, null, 20000, 12000);
+                }, null, 5000, 13000);
         }
         base.OnInitialized();
     }
@@ -76,7 +76,7 @@
     private async Task UpdateTransactions()
     {
         transactions = await Service.GetRecentTransactions();
-        this.StateHasChanged();
+        await InvokeAsync(StateHasChanged);
     }
 
     public static DateTime UnixTimeStampToDateTime( double unixTimeStamp )

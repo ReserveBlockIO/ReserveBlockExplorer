@@ -2,6 +2,7 @@
 using ReserveBlockExplorer.Data;
 using ReserveBlockExplorer.Models;
 using System.ComponentModel.DataAnnotations;
+using System.Net;
 
 namespace ReserveBlockExplorer
 {
@@ -44,7 +45,9 @@ namespace ReserveBlockExplorer
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Error");
+
+            return Task.CompletedTask;
         }
 
         public async void SyncChain()
@@ -69,9 +72,13 @@ namespace ReserveBlockExplorer
                 }
                 try
                 {
-                    using (HttpClient client = new HttpClient())
+                    HttpClientHandler clientHandler = new HttpClientHandler();
+                    clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+
+                    using (HttpClient client = new HttpClient(clientHandler))
                     {
                         string endpoint = walletAPIURL + "/api/V1/SendBlock/" + chainData.Height;
+
                         using (var Response = await client.GetAsync(endpoint))
                         {
                             if (Response.StatusCode == System.Net.HttpStatusCode.OK)
@@ -135,6 +142,9 @@ namespace ReserveBlockExplorer
                                         chainData.Height += 1;
 
                                         await _context.SaveChangesAsync();
+
+                                        string textFin = "finish: ";
+
                                     }
                                 }
                             }
@@ -147,7 +157,9 @@ namespace ReserveBlockExplorer
                 }
                 catch (Exception ex)
                 {
+                    //string textF = "failed: " + ex.Message + " inner: " + ex.InnerException.Message;
 
+                    //await File.WriteAllTextAsync(@"D:\Test\failed.txt", textF);
                 }
             }
         }

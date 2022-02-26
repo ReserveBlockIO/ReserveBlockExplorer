@@ -20,7 +20,7 @@ namespace ReserveBlockExplorer.Data
         public async Task<List<Block>> GetRecentBlocks()
         {
             var blockChain = _context.BlockChainData.FirstOrDefault();
-            var blocksAbove = blockChain.Height - 10;
+            var blocksAbove = blockChain.Height != 0 ? blockChain.Height - 10  : 0;
 
             var blocks = await _context.Block.Where(x => x.Height > blocksAbove)
                 .AsNoTracking()

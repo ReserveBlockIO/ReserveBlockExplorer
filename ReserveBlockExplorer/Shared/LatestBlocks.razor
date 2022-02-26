@@ -2,6 +2,7 @@
 @using ReserveBlockExplorer.Models
 
 @inherits OwningComponentBase<BlockchainService>
+@inject NavigationManager NavManager
 
 <div class="card">
     <div class="card-header">
@@ -47,33 +48,31 @@
     {
         // load the list
         blocks = await Service.GetRecentBlocks();
-        //StateHasChanged();
-        
     }
 
-    protected override async void OnAfterRender(bool firstRender)
+    protected async override Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
-        {
-                var timer = new System.Threading.Timer((_) =>
+        
+            var timer = new System.Threading.Timer((_) =>
+            {
+                InvokeAsync( async ()  =>
                 {
-                    InvokeAsync( async ()  =>
-               {
-               // Add your update logic here
-               await UpdateBlock();
-               // Update the UI
-               //StateHasChanged();
-                    });
-                }, null, 20000, 12000);
-        }
-        base.OnInitialized();
+                   // Add your update logic here
+                   await UpdateBlock();
+                   // Update the UI
+                });
+            }, null, 5000, 12000);
+
+        
+       // base.OnInitialized();
     }
 
 
     private async Task UpdateBlock()
     {
         blocks = await Service.GetRecentBlocks();
-        this.StateHasChanged();
+        await InvokeAsync(StateHasChanged);
+        //NavManager.NavigateTo("/", true);
     }
 
     public static DateTime UnixTimeStampToDateTime( double unixTimeStamp )

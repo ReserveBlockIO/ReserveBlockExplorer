@@ -21,8 +21,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
-builder.Services.AddTransient<ApplicationDbContext>();
-builder.Services.AddTransient<BlockchainService>();
+builder.Services.AddScoped<ApplicationDbContext>();
+builder.Services.AddScoped<BlockchainService>();
 
 //Radzen tools
 builder.Services.AddScoped<DialogService>();
@@ -31,6 +31,8 @@ builder.Services.AddScoped<TooltipService>();
 builder.Services.AddScoped<ContextMenuService>();
 
 builder.Services.AddHostedService<ReserveBlockExplorer.TaskScheduler>();
+
+//builder.WebHost.UseKestrel().UseUrls("http://*:5000; https://localhost:5001; http://rbx.network");
 
 var app = builder.Build();
 
@@ -43,13 +45,16 @@ if (!app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
     app.UseDeveloperExceptionPage();
+
 }
+
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     // auto migration
     context.Database.Migrate();
 }
+
 
 app.UseHttpsRedirection();
 
