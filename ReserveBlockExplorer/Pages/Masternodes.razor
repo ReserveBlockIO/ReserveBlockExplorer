@@ -1,0 +1,183 @@
+﻿@page "/masternodes"
+@using ReserveBlockExplorer.Data
+@using ReserveBlockExplorer.Models
+
+@inherits OwningComponentBase<BlockchainService>
+
+
+<div class="card">
+    <div class="card-header">
+        <div class="d-flex align-items-center">
+            <h5>Masternodes</h5>
+            @if (blocks == null)
+            {
+                <div class="spinner-grow spinner-grow-sm ml-auto" role="status" aria-hidden="true"></div>
+            }
+        </div>
+    </div>
+    <div class="container">
+         <div class="row">
+            <RadzenCard>
+                <h4 class="mb-4">Search For Masternode</h4>
+                <RadzenTextBox Placeholder="Search..." @bind-Value=@AddressSearch Class="w-100" />
+                    <RadzenButton Click=@AddressSearchClick Text="Search Address" />
+            </RadzenCard>
+        </div>
+         
+        @if (ShowPopup)
+            {
+                <!-- This is the popup to create or edit a team -->
+                <div class="modal" tabindex="-1" style="display:block" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 class="modal-title">Masternode Info</h3>
+                                <!-- Button to close the popup -->
+                                <button type="button" class="close"
+                                        @onclick="ClosePopup">
+                                    <span aria-hidden="true">X</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                            @if(valInfo == null)
+                            {
+                                <p>Address not found. Please try back later. Searches happen every 3 hours.</p>
+                            }
+                            else
+                            {
+                                <p>Address: @valInfo.Address</p>
+                                <p>Node Name: @valInfo.Validator.UniqueName</p>
+                                <p>Online: @valInfo.IsOnline.ToString()</p>
+                                <p>Banned: @valInfo.IsBanned.ToString()</p>
+                                <p>Last Checked: @valInfo.LastChecked.ToLocalTime() CST</p>
+                                <p>--------------------------------------------------------------</p>
+                                <p>Blocks in past 24 hours: @valInfo.BlocksIn24Hours.ToString()</p>
+                                <p>Blocks in past 7 days: @valInfo.BlocksIn7Days.ToString()</p>
+
+                            }
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        <div class="row">
+            <div class="col-sm-12 col-lg-6 offset-lg-3 my-5">
+                <RadzenChart>
+                    <RadzenDonutSeries Data="@nodes" CategoryProperty="Validator" ValueProperty="BlockCount" TItem="DataItem">
+                        <TitleTemplate>
+                            <div class="rz-donut-content">
+                                <div>Last 1000</div> 
+                                <div>Blocks Crafted</div>
+                            </div>
+                        </TitleTemplate>
+                        <TooltipTemplate Context="nodes">
+                            <div>
+                                Validator: @nodes.Validator
+                            </div>
+                             <div>
+                                Blocks Crafted: @nodes.BlockCount
+                            </div>
+                        </TooltipTemplate>
+                    </RadzenDonutSeries>
+                </RadzenChart>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+<style>
+.product-title {
+    min-height: 72px;
+    color: #da0074;
+    background-color: rgba(255, 41, 155, .1);
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 20px;
+    letter-spacing: -0.02em;
+}
+.price-badge {
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 20px;
+    padding: 8px;
+}
+</style>
+
+
+@code {
+    List<IGrouping<string, Models.Block>> blocks;
+    List<ReserveBlockExplorer.Models.Transaction>? transactions;
+    ReserveBlockExplorer.Models.ValidatorInfo valInfo;
+    DataItem[] nodes;
+    [Parameter]
+    public string BlockNumber { get; set; }
+    public string AddressSearch { get; set; }
+    bool ShowPopup = false;
+
+    async Task ClosePopup()
+    {
+        // Close the Popup
+        ShowPopup = false;
+        AddressSearch = "";
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        blocks = await Service.GetMasternodes();
+        var count = blocks.Count();
+        var arrayCount = 0;
+
+        nodes = new DataItem[count];
+
+        blocks.ForEach(x =>
+        {
+            DataItem validator = new DataItem
+            {
+                Validator = x.Key,
+                BlockCount = x.Count()
+            };
+            nodes[arrayCount] = validator;
+            arrayCount += 1;
+        });
+
+    }
+
+    public async void AddressSearchClick()
+    {
+        var addressSearch = AddressSearch;
+        valInfo = await Service.GetAddressInfo(addressSearch);
+        ShowPopup = true;
+    }
+
+    class DataItem
+    {
+        public string Validator { get; set; }
+        public double BlockCount { get; set; }
+    }
+
+    //DataItem[] revenue = new DataItem[] {
+    //new DataItem
+    //{
+    //Quarter = "Q1",
+    //Revenue = 30000
+    //},
+    //new DataItem
+    //{
+    //Quarter = "Q2",
+    //Revenue = 40000
+    //},
+    //new DataItem
+    //{
+    //Quarter = "Q3",
+    //Revenue = 50000
+    //},
+    //new DataItem
+    //{
+    //Quarter = "Q4",
+    //Revenue = 80000
+    //},
+    //};
+
+}

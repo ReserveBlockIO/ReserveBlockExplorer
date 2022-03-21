@@ -14,8 +14,11 @@ namespace ReserveBlockExplorer.Data
         {
         }
 
+        public DbSet<BanReport> BanReport { get; set; }
         public DbSet<Block> Block { get; set; }
         public DbSet<BlockChainData> BlockChainData { get; set; }
         public DbSet<Transaction> Transaction { get; set; }
+        public DbSet<Validator> Validator { get; set; }
+        public DbSet<ValidatorInfo> ValidatorInfo { get; set; }
     }
 }

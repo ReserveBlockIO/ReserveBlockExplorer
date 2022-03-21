@@ -26,7 +26,7 @@
                             <div>@string.Format(@"> {0:mm} mins {0:ss} secs ago", (DateTime.UtcNow - UnixTimeStampToDateTime(block.Timestamp)))</div>
                         </small>
                         <small>
-                            <div>@UnixTimeStampToDateTime(block.Timestamp).ToLocalTime()</div>
+                            <div>@UnixTimeStampToDateTime(block.Timestamp).ToLocalTime() CST</div>
                         </small>
                     </div>
                     <div>
@@ -79,7 +79,7 @@
     {
         // Unix timestamp is seconds past epoch
         DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-        dateTime = dateTime.AddSeconds( unixTimeStamp ).ToLocalTime();
+        dateTime = dateTime.AddSeconds( unixTimeStamp );
         return dateTime;
     }
 
