@@ -11,15 +11,17 @@
 
 ![GitHub Release Date](https://img.shields.io/github/release-date/ReserveBlockIO/ReserveBlockExplorer)
 
-# ReserverBlock Explorer
+# ReserverBlock Explorer (Basic C# Explorer)
 For more information and to follow latest news go to:
 https://reserveblock.io
 
 This repo is currently a work in progress. New commits pushing more of the RBX Block Explorer are staged. Keep an eye out for releases to test the blockchain.
 Please follow to get latest updates!
 
-# What is ReserverBlock?
-ReserverBlock is an NFT centric blockchain aiming to focus on NFTs and deliver a blockchain built around them. 
+This explorer does not show balances. It will process and parse all block and transaction info and allow the searching of blocks and hashes.
+
+# What is ReserveBlock?
+ReserveBlock is an NFT centric blockchain aiming to focus on NFTs and deliver a blockchain built around them. 
 ReserveBlock Foundation (reserveblock.io), is the first open-source platform allowing for the creation of a decentralized NFT Centric Blockchain, which is independently governed and democratizes NFTs for everyone.
 
 * RBX Block Explorer
